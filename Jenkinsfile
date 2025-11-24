@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     options {
-        deleteDir()
+        deleteDir() // limpa o workspace antes de tudo
     }
 
     stages {
@@ -10,7 +10,11 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo "⛰️ Fazendo checkout do repositório..."
-                checkout scm
+
+                git(
+                    url: 'https://github.com/Georgyo-Luka/Hub-De_Leitura',
+                    branch: 'main'
+                )
             }
         }
 
