@@ -50,12 +50,19 @@ pipeline {
         }
 
         stage('Build de Artefatos') {
-            steps {
-                 sh ''' 
-                apt-get update && apt-get install -y zip
-                zip -r hub-de-leitura.zip .
-                    '''
-            }
+    agent {
+        docker {
+            image 'node:18-bullseye'
+            args '-u root'
+        }
+    }
+    steps {
+        sh '''
+            apt-get update && apt-get install -y zip
+            zip -r hub-de-leitura.zip .
+        '''
+    }
+}
         }
     }
 
