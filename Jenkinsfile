@@ -51,7 +51,8 @@ pipeline {
 
         stage('Build de Artefatos') {
             steps {
-                sh 'zip -r hub-de-leitura.zip .'
+                apt-get update && apt-get install -y zip
+                zip -r hub-de-leitura.zip .
             }
         }
     }
