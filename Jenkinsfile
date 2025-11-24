@@ -1,71 +1,58 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18-bullseye'
-            args '-u root'
-        }
+    agent any
+
+    /* Limpa o workspace ANTES de iniciar qualquer estágio */
+    options {
+        deleteDir()
     }
 
     stages {
 
         stage('Checkout') {
             steps {
+                echo "⛰️ Fazendo checkout do repositório..."
                 checkout scm
             }
         }
 
-        stage('Instalar dependências') {
+        stage('Build') {
             steps {
-                sh 'npm install'
+                echo "🔨 Rodando build..."
+                sh """
+                    echo 'executando build'
+                    # coloque seu comando real aqui
+                    # ex: mvn clean package
+                """
             }
         }
 
-        stage('Preparar Banco de Dados') {
+        stage('Tests') {
             steps {
-                sh 'npm run db'
+                echo "🧪 Rodando testes..."
+                sh """
+                    echo 'rodando testes'
+                    # coloque seu comando real aqui
+                    # ex: mvn test
+                """
             }
         }
 
-        stage('Validar Start') {
+        stage('Deploy') {
             steps {
-                sh '''
-                    npm start &
-                    APP_PID=$!
-                    sleep 5
-                    kill $APP_PID
-                '''
-            }
-        }
-
-        stage('Testes (se existirem)') {
-            steps {
-                script {
-                    if (fileExists('package.json') && sh(script: "grep -q jest package.json", returnStatus: true) == 0) {
-                        sh 'npm test'
-                    } else {
-                        echo "Nenhum teste configurado."
-                    }
-                }
-            }
-        }
-
-        stage('Build de Artefatos') {
-            steps {
-                sh '''
-                    apt-get update && apt-get install -y zip
-                    zip -r hub-de-leitura.zip .
-                '''
+                echo "🚀 Fazendo deploy..."
+                sh """
+                    echo 'simulando deploy'
+                    # coloque seu comando real aqui
+                    # ex: scp target/app.jar servidor:/apps/
+                """
             }
         }
     }
 
     post {
-        success {
-            echo "Pipeline finalizado com sucesso!"
-            archiveArtifacts artifacts: 'hub-de-leitura.zip', fingerprint: true
-        }
-        failure {
-            echo "Pipeline falhou."
+        always {
+            echo "🧹 Limpando workspace depois do pipeline..."
+            cleanWs()
         }
     }
 }
