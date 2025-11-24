@@ -1,7 +1,6 @@
 pipeline {
     agent any
 
-    /* Limpa o workspace ANTES de iniciar qualquer estágio */
     options {
         deleteDir()
     }
@@ -17,33 +16,24 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo "🔨 Rodando build..."
                 sh """
-                    echo 'executando build'
-                    # coloque seu comando real aqui
-                    # ex: mvn clean package
+                    echo '🔨 executando build'
                 """
             }
         }
 
         stage('Tests') {
             steps {
-                echo "🧪 Rodando testes..."
                 sh """
-                    echo 'rodando testes'
-                    # coloque seu comando real aqui
-                    # ex: mvn test
+                    echo '🧪 rodando testes'
                 """
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "🚀 Fazendo deploy..."
                 sh """
-                    echo 'simulando deploy'
-                    # coloque seu comando real aqui
-                    # ex: scp target/app.jar servidor:/apps/
+                    echo '🚀 simulando deploy'
                 """
             }
         }
@@ -51,7 +41,7 @@ pipeline {
 
     post {
         always {
-            echo "🧹 Limpando workspace depois do pipeline..."
+            echo "🧹 Limpando workspace..."
             cleanWs()
         }
     }
