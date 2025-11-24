@@ -1,8 +1,9 @@
 pipeline {
-    agent any
-
-    tools {
-        nodejs "Node18"
+    agent {
+        docker {
+            image 'node:18-bullseye'
+            args '-u root'
+        }
     }
 
     stages {
@@ -49,14 +50,9 @@ pipeline {
         }
 
         stage('Build de Artefatos') {
-            agent any // ← obrigatório, já que docker não funciona aí
             steps {
                 sh '''
-                    # garante que tem zip
-                    if ! command -v zip >/dev/null; then
-                      sudo apt-get update && sudo apt-get install -y zip
-                    fi
-
+                    apt-get update && apt-get install -y zip
                     zip -r hub-de-leitura.zip .
                 '''
             }
