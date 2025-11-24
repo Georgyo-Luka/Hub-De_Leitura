@@ -28,7 +28,6 @@ pipeline {
         stage('Validar Start') {
             steps {
                 sh '''
-                    # Sobe a aplicação por alguns segundos para garantir que não quebra
                     npm start &
                     APP_PID=$!
                     sleep 5
@@ -50,19 +49,17 @@ pipeline {
         }
 
         stage('Build de Artefatos') {
-    agent {
-        docker {
-            image 'node:18-bullseye'
-            args '-u root'
-        }
-    }
-    steps {
-        sh '''
-            apt-get update && apt-get install -y zip
-            zip -r hub-de-leitura.zip .
-        '''
-    }
-}
+            agent any // ← obrigatório, já que docker não funciona aí
+            steps {
+                sh '''
+                    # garante que tem zip
+                    if ! command -v zip >/dev/null; then
+                      sudo apt-get update && sudo apt-get install -y zip
+                    fi
+
+                    zip -r hub-de-leitura.zip .
+                '''
+            }
         }
     }
 
@@ -75,3 +72,4 @@ pipeline {
             echo "Pipeline falhou."
         }
     }
+}
