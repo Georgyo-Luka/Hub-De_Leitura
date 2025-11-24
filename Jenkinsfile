@@ -75,4 +75,3 @@ pipeline {
             echo "Pipeline falhou."
         }
     }
-}
